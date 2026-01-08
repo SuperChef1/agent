@@ -13,14 +13,22 @@ sys.path.append(str(project_root))
 
 from tools.material_db.query import MaterialQueryInterface
 from core.models.openai import OpenAIModel
-from core.models.anthropic import AnthropicModel
+# from core.models.anthropic import AnthropicModel
 from core.models.base import BaseModel
 
 # Load environment variables
 dotenv.load_dotenv()
+DEFAULT_MODEL_NAME = os.getenv("OPENAI_MODEL_NAME", "gpt-5.2-2025-12-11")
+AVAILABLE_MODELS = ["gpt-5.2-2025-12-11", "gpt-5", "gpt-4o", "gpt-4o-mini"]
+
+if DEFAULT_MODEL_NAME not in AVAILABLE_MODELS:
+    AVAILABLE_MODELS.append(DEFAULT_MODEL_NAME)
+
+if DEFAULT_MODEL_NAME not in AVAILABLE_MODELS:
+    AVAILABLE_MODELS.append(DEFAULT_MODEL_NAME)
 
 class MaterialDatabaseCLI:
-    def __init__(self, db_path: str, model: BaseModel, debug: bool = False, log_dir: str = "experiments/logs/materials_chat"):
+    def __init__(self, db_path: str, model: BaseModel, debug: bool = False, log_dir: str = "logs/materials_chat"):
         self.model = model
         self.log_dir = Path(log_dir) / (model.model_name if model else "default")
         self.log_dir.mkdir(parents=True, exist_ok=True)
@@ -60,6 +68,41 @@ class MaterialDatabaseCLI:
                     print("\nConversation history cleared.")
                     continue
                 
+                # if command.lower() == 'recommend':
+                #     # Get application description
+                #     description = input("\nDescribe your application: ").strip()
+                    
+                #     # Get constraints
+                #     print("\nEnter constraints (press Enter without input when done)")
+                #     print("Format: key=value (e.g., wavelength=1550e-9)")
+                    
+                #     constraints = {}
+                #     while True:
+                #         constraint = input("Constraint (or Enter to continue): ").strip()
+                #         if not constraint:
+                #             break
+                            
+                #         try:
+                #             key, value = constraint.split('=')
+                #             # Try to convert value to float or int if possible
+                #             try:
+                #                 value = float(value)
+                #             except ValueError:
+                #                 try:
+                #                     value = int(value)
+                #                 except ValueError:
+                #                     pass
+                #             constraints[key.strip()] = value
+                #         except ValueError:
+                #             print("Invalid constraint format. Use key=value")
+                #             continue
+                    
+                #     print("\nQuerying database...")
+                #     results = await self.query_interface.recommend_material(
+                #         description,
+                #         constraints=constraints,
+                #         conversation_history=self.conversation_history
+                #     )
                 else:
                     # Regular query/conversation
                     print("\nProcessing...")
@@ -103,12 +146,12 @@ async def main():
     parser = argparse.ArgumentParser(description='Query the materials database')
     parser.add_argument('--db-path', 
                        type=str,
-                       default=r"D:\agent\metachat-main\metachat-aim\tools\material_db\materials.db",
+                       default="materials.db",
                        help='Path to the SQLite database file')
     parser.add_argument('--model',
                        type=str,
-                       default="gpt-4o",
-                       choices=["gpt-4o", "gpt-4o-mini"],
+                       default=DEFAULT_MODEL_NAME,
+                       choices=AVAILABLE_MODELS,
                        help='OpenAI model to use')
     parser.add_argument('--debug',
                        action='store_true',
@@ -129,6 +172,10 @@ async def main():
                 model_name=args.model,
                 api_key=os.getenv("OPENAI_API_KEY")
             ),
+            # model=AnthropicModel(
+            #     model_name="claude-3-5-sonnet-20240620",
+            #     api_key=os.getenv("ANTHROPIC_API_KEY")
+            # ),
             debug=args.debug
         )
         await cli.interactive_session()

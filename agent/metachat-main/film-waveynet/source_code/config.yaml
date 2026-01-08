@@ -11,7 +11,7 @@ fields_base_adj: Hz_adjoint_
 fields_dir: /media/tmp2/metachat/data/02_deg_-5-25_n14-28_wl400-700_b3-10_l100-220_h25-50/fields
 fields_dir_adj: /media/tmp2/metachat/data/02_deg_-5-25_n14-28_wl400-700_b3-10_l100-220_h25-50/fields_adj
 max_wavelength: 7.0e-07
-metadata_file: /media/tmp2/metachat/data/02_deg_-5-25_n14-28_wl400-700_b3-10_l100-220_h25-50/metadata.parquet
+metadata_file: /media/tmp2/metachat/data/metadata.parquet
 min_wavelength: 4.0e-07
 model_saving_path: /media/tmp1/metachat/checkpoints/04_film_angle_dec_gen_400-700_fwd150k_adj150k_sample_otf
 network_depth: 6

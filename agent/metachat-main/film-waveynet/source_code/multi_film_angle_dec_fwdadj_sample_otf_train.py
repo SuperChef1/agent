@@ -588,7 +588,7 @@ def main(args):
 if __name__ == '__main__':
     torch.set_default_tensor_type(torch.FloatTensor)
 
-    config_path = sys.argv[1]
+    config_path = r'D:\agent\metachat-main\film-waveynet\source_code\config.yaml'
 
     parser = argparse.ArgumentParser(description="Arguments for the controlnet model")
     with open(config_path, "r") as file:
